@@ -6,7 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var auth = require('./routes/auth');
+var user = require('./routes/user');
+
+//认证模块对象
+var authAdmin = require('./authentication');
 
 var app = express();
 
@@ -22,8 +26,38 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//设置跨域访问
+app.all('*', function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8888');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With,Authorization');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE');
+  res.header('Content-Type', 'application/json;charset=utf-8');
+  next();
+});
+
 app.use('/', routes);
-app.use('/users', users);
+//针对所有 /api 路径下的访问进行权限控制
+app.use(/^\/api\/.+/g, function(req, res, next) {
+  //如果是认证的请求，跳过
+  if(/^\/api\/auth/g.test(req.pathname)) {
+    console.log('正在进行登录认证。。。');
+    next();
+    return;
+  }
+  //其它的请求都需要进行登录验证
+  if(!authAdmin.verify(req)){
+    console.log('客户端token验证失败');
+    res.json({
+      code: -180,
+      result: '客户端token验证失败'
+    });
+  }
+  else {
+    next();
+  }
+});
+app.use('/api/auth', auth);
+app.use('/api/user', user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
