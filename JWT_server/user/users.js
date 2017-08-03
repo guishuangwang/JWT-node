@@ -10,9 +10,9 @@ var USERS = [{
 }];
 
 module.exports = {
-    getUser: function (username, password) {
-        var user = USERS.filter(function (val, index, arr) {
-            return val.username === username && val.password === password;
+    getUser: (usr, pwd) => {
+        let user = USERS.filter((val, index, arr) => {
+            return val.username === usr && val.password === pwd;
         });
         return user.length === 0 ? false : user[0];
     }
