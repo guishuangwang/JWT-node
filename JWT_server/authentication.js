@@ -32,8 +32,35 @@ var _create = function(data) {
     });
 };
 //从请求中获取token
-var _getToken = function() {
+var _getToken = function(req) {
+    //假设客户端将token放在header或者查询参数中
+    //按如下规则获取
+    var token = '';
+    var auArray = req.headers.authorization && req.headers.authorization.split(' ');
 
+    if(auArray && auArray[0] === 'Bearer') {
+        token = auArray[1];
+    }
+    else if(req.query && req.query.token) {
+        token = req.query.token;
+    }
+    return token;
+};
+
+//验证token，得到其中的payload
+var _verify = function(req) {
+    var token = _getToken(req);
+    if(!token)
+        return false;
+    
+    var payload = null;
+    try {
+        payload = jwt.verify(token, pub_cert, {algorithms: 'RS256'});
+    }
+    catch (err) {
+        console.log(err);
+    }
+    return payload;
 };
 
 module.exports = {
@@ -48,15 +75,20 @@ module.exports = {
         }
     },
     //验证token，得到其中的payload
-    verify: function() {
-
+    verify: function(req) {
+        return _verify(req);
     },
     //获取token中的用户信息
-    getUserInfo: function() {
-
+    getUserInfo: function(req) {
+        var payload = _verify(req);
+        return payload && payload.data;
     },
     //刷新token
-    refreshToken: function() {
-
+    refreshToken: function(req) {
+        var payload = _verify(req);
+        if(payload) {
+            return _create(payload.data);
+        }
+        else return '';
     }
 };
