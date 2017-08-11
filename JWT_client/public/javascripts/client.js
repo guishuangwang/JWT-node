@@ -46,5 +46,4 @@ $(function() {
         localStorage.removeItem('token');
         location.reload();
     });
-    //to be removed.
 })
