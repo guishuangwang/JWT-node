@@ -33,7 +33,9 @@ $(function() {
             dataType: "json",
             success: function (response) {
                 if(response.code === 200) {
-                    alert(response.userInfo);
+                    var username = response.userInfo && response.userInfo.username;
+                    var password = response.userInfo && response.userInfo.password;
+                    alert('用户名：' + username + '\n密码：' + password);
                     localStorage.setItem('token', response.token);
                 }
                 else{

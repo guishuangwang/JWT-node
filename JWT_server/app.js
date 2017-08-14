@@ -37,25 +37,25 @@ app.all('*', function(req, res, next) {
 
 app.use('/', routes);
 //针对所有 /api 路径下的访问进行权限控制
-app.use(/^\/api\/.+/g, function(req, res, next) {
-  //如果是认证的请求，跳过
-  if(/^\/api\/auth/g.test(req.pathname)) {
-    console.log('正在进行登录认证。。。');
-    next();
-    return;
-  }
-  //其它的请求都需要进行登录验证
-  if(!authAdmin.verify(req)){
-    console.log('客户端token验证失败');
-    res.json({
-      code: -180,
-      result: '客户端token验证失败'
-    });
-  }
-  else {
-    next();
-  }
-});
+// app.use(/^\/api\/.+/g, function(req, res, next) {
+//   //如果是认证的请求，跳过
+//   if(/^\/api\/auth/g.test(req.pathname)) {
+//     console.log('正在进行登录认证。。。');
+//     next();
+//     return;
+//   }
+//   //其它的请求都需要进行登录验证
+//   if(!authAdmin.verify(req)){
+//     console.log('客户端token验证失败');
+//     res.json({
+//       code: -180,
+//       result: '客户端token验证失败'
+//     });
+//   }
+//   else {
+//     next();
+//   }
+// });
 app.use('/api/auth', auth);
 app.use('/api/user', user);
 

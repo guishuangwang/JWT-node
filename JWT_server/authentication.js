@@ -8,7 +8,7 @@ var expireTime = '1h';
 var getCredential = function(req) {
     return {
         username: req.body.username || req.query.username,
-        password: req.body.password || req.body.password
+        password: req.body.password || req.query.password
     }
 };
 //登录验证， 判断用户名密码是否有效
@@ -67,6 +67,7 @@ module.exports = {
     //生成token
     generateToken: function(req) {
         var data = verifyCredential(getCredential(req));
+        console.log('获取到的用户：' + data);
         if(!data) {
             return '';
         }

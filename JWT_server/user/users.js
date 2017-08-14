@@ -11,6 +11,7 @@ var USERS = [{
 
 module.exports = {
     getUser: (usr, pwd) => {
+        console.log('usr:' + usr + 'pwd:' + pwd);
         let user = USERS.filter((val, index, arr) => {
             return val.username === usr && val.password === pwd;
         });

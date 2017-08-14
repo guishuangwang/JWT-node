@@ -4,7 +4,7 @@ var router = express.Router();
 var authAdmin = require('../authentication');
 
 /* GET users listing. */
-router.post('/', function(req, res, next) {
+router.use('/', function(req, res, next) {
   res.json({
       code: 200,
       token: authAdmin.generateToken(req),
